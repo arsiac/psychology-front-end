@@ -7,6 +7,12 @@ export default {
     updateTime: null
   },
   mutations: {
+    updateToken (s, o) {
+      s.accessToken = o.token
+      s.refreshToken = o.refresh
+      s.expireTime = o.expireTime
+      s.updateTime = o.updateTime
+    },
     updateAccessToken (s, t) {
       s.accessToken = t
     },
