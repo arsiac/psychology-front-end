@@ -1,5 +1,7 @@
 import http from '@/utils/http'
-import { USER_CENTRE } from '@/api/constant'
+import { SERVER, HTTP_METHOD } from '@/utils/constant'
+
+const USER_CENTRE = SERVER.USER_CENTRE
 
 /**
  * 注册接口
@@ -9,7 +11,7 @@ import { USER_CENTRE } from '@/api/constant'
 function register (form) {
   return http({
     url: `${USER_CENTRE}/register`,
-    method: 'post',
+    method: HTTP_METHOD.POST,
     data: form
   })
 }
@@ -22,7 +24,7 @@ function register (form) {
 function login (form) {
   return http({
     url: `${USER_CENTRE}/login`,
-    method: 'post',
+    method: HTTP_METHOD.POST,
     data: form
   })
 }
@@ -35,7 +37,7 @@ function login (form) {
 function logout (id) {
   return http({
     url: `${USER_CENTRE}/logout`,
-    method: 'post',
+    method: HTTP_METHOD.POST,
     data: { id }
   })
 }
@@ -47,7 +49,7 @@ function captcha () {
   return http({
     url: `${USER_CENTRE}/captcha`,
     responseType: 'arraybuffer',
-    method: 'get'
+    method: HTTP_METHOD.GET
   })
 }
 
@@ -55,10 +57,7 @@ function captcha () {
  * 获取应用名称
  * */
 function app () {
-  return http({
-    url: `${USER_CENTRE}/app`,
-    method: 'get'
-  })
+  return http.$get(`${USER_CENTRE}/app`)
 }
 
 export default {

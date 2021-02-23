@@ -2,6 +2,7 @@ import axios from 'axios'
 import router from '@/router'
 import store from '@/store'
 import { Message } from 'element-ui'
+import { HTTP_METHOD } from './constant'
 
 const http = axios.create({
   timeout: 1000 * 30,
@@ -19,10 +20,10 @@ http.interceptors.request.use(config => {
   config.headers.authorization = store.getters.token
 
   console.log(
-      `==> HTTP(request)
-    url: ${config.url}
-    method: ${config.method}
-    data: `, config.data)
+    `==> HTTP(request)
+  url: ${config.url}
+  method: ${config.method}
+  data: `, config.data)
 
   // 根据请求方式添加信息
   const method = config.method.toLowerCase()
@@ -30,7 +31,7 @@ http.interceptors.request.use(config => {
     case 'post':
       config.data.createBy = store.getters.id
 
-      // eslint-disable-next-line no-fallthrough
+    // eslint-disable-next-line no-fallthrough
     case 'put':
       config.data.updateBy = store.getters.id
       break
@@ -79,5 +80,27 @@ http.interceptors.response.use(response => {
 
   return Promise.reject(error)
 })
+
+http.$methods = HTTP_METHOD
+
+http.$get = function (url, params) {
+  const method = HTTP_METHOD.GET
+  return http({ url, params, method })
+}
+
+http.$post = function (url, data) {
+  const method = HTTP_METHOD.POST
+  return http({ url, data, method })
+}
+
+http.$put = function (url, data) {
+  const method = HTTP_METHOD.PUT
+  return http({ url, data, method })
+}
+
+http.$delete = function (url, data) {
+  const method = HTTP_METHOD.DELETE
+  return http({ url, data, method })
+}
 
 export default http
