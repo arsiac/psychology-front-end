@@ -10,6 +10,7 @@
 /* ---------- global functions - vendors ------------ */
 Object.deepExtend = (function () {
   const deepClone = function (destination, source) {
+    // eslint-disable-next-line no-unused-vars
     for (const property in source) {
       // 不存在该属性
       if (!Object.prototype.hasOwnProperty.call(source, property)) {
