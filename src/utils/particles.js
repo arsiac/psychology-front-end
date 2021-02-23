@@ -8,22 +8,30 @@
 /* ----------------------------------------------- */
 
 /* ---------- global functions - vendors ------------ */
+Object.deepExtend = (function () {
+  const deepClone = function (destination, source) {
+    for (const property in source) {
+      // 不存在该属性
+      if (!Object.prototype.hasOwnProperty.call(source, property)) {
+        continue
+      }
 
-Object.deepExtend = function deepExtend (destination, source) {
-  for (const property in source) {
-    if (!Object.prototype.hasOwnProperty.call(source, property)) {
-      continue
+      // source[property] 为对象,递归复制
+      if (source[property] &&
+        source[property].constructor &&
+        source[property].constructor === Object) {
+        destination[property] = destination[property] || {}
+        deepClone(destination[property], source[property])
+
+        // 直接复制属性
+      } else {
+        destination[property] = source[property]
+      }
     }
-    if (source[property] && source[property].constructor &&
-      source[property].constructor === Object) {
-      destination[property] = destination[property] || {}
-      deepExtend(destination[property], source[property])
-    } else {
-      destination[property] = source[property]
-    }
+    return destination
   }
-  return destination
-}
+  return deepClone
+})()
 
 const requestAnimFrame = (function () {
   return window.requestAnimationFrame ||
@@ -79,15 +87,15 @@ function hsla (hue, saturation, lightness, alpha = 1) {
 /* ---------- pJS ------------ */
 let pJSDom = []
 
-const particles = function (tag_id, params) {
-  const canvas_el = document.querySelector(`#${tag_id} > .particles-js-canvas-el`)
+const Particles = function (tagId, params) {
+  const canvasElement = document.querySelector(`#${tagId} > .particles-js-canvas-el`)
 
   /* particles.js variables with default values */
   this.pJS = {
     canvas: {
-      el: canvas_el,
-      w: canvas_el.offsetWidth,
-      h: canvas_el.offsetHeight
+      el: canvasElement,
+      w: canvasElement.offsetWidth,
+      h: canvasElement.offsetHeight
     },
     particles: {
       number: {
@@ -295,7 +303,7 @@ const particles = function (tag_id, params) {
 
   /* --------- pJS functions - particles ----------- */
 
-  pJS.fn.particle = function (color, opacity, position) {
+  pJS.fn.Particle = function (color, opacity, position) {
     /* size */
     this.radius = (pJS.particles.size.random ? Math.random() : 1) * pJS.particles.size.value
     if (pJS.particles.size.anim.enable) {
@@ -326,8 +334,8 @@ const particles = function (tag_id, params) {
     this.color = {}
     if (typeof (color.value) === 'object') {
       if (color.value instanceof Array) {
-        const color_selected = color.value[Math.floor(Math.random() * pJS.particles.color.value.length)]
-        this.color.rgb = hexToRgb(color_selected)
+        const colorSelected = color.value[Math.floor(Math.random() * pJS.particles.color.value.length)]
+        this.color.rgb = hexToRgb(colorSelected)
       } else {
         if (color.value.r !== undefined && color.value.g !== undefined && color.value.b !== undefined) {
           this.color.rgb = {
@@ -414,13 +422,13 @@ const particles = function (tag_id, params) {
 
     /* if shape is image */
 
-    const shape_type = pJS.particles.shape.type
-    if (typeof (shape_type) === 'object') {
-      if (shape_type instanceof Array) {
-        this.shape = shape_type[Math.floor(Math.random() * shape_type.length)]
+    const shapeType = pJS.particles.shape.type
+    if (typeof (shapeType) === 'object') {
+      if (shapeType instanceof Array) {
+        this.shape = shapeType[Math.floor(Math.random() * shapeType.length)]
       }
     } else {
-      this.shape = shape_type
+      this.shape = shapeType
     }
 
     if (this.shape === 'image') {
@@ -441,9 +449,9 @@ const particles = function (tag_id, params) {
     }
   }
 
-  pJS.fn.particle.prototype.draw = function () {
-    let img_obj
-    let color_value
+  pJS.fn.Particle.prototype.draw = function () {
+    let imgObj
+    let colorValue
     let opacity
     let radius
     const p = this
@@ -461,12 +469,12 @@ const particles = function (tag_id, params) {
     }
 
     if (p.color.rgb) {
-      color_value = rgba(p.color.rgb.r, p.color.rgb.g, p.color.rgb.b, opacity)
+      colorValue = rgba(p.color.rgb.r, p.color.rgb.g, p.color.rgb.b, opacity)
     } else {
-      color_value = hsla(p.color.hsl.h, p.color.hsl.s, p.color.hsl.l, opacity)
+      colorValue = hsla(p.color.hsl.h, p.color.hsl.s, p.color.hsl.l, opacity)
     }
 
-    pJS.canvas.ctx.fillStyle = color_value
+    pJS.canvas.ctx.fillStyle = colorValue
     pJS.canvas.ctx.beginPath()
 
     switch (p.shape) {
@@ -506,15 +514,15 @@ const particles = function (tag_id, params) {
 
       case 'image':
         if (pJS.tmp.img_type === 'svg') {
-          img_obj = p.img.obj
+          imgObj = p.img.obj
         } else {
-          img_obj = pJS.tmp.img_obj
+          imgObj = pJS.tmp.imgObj
         }
 
-        if (img_obj) {
+        if (imgObj) {
           // draw
           pJS.canvas.ctx.drawImage(
-            img_obj,
+            imgObj,
             p.x - radius,
             p.y - radius,
             radius * 2,
@@ -536,12 +544,12 @@ const particles = function (tag_id, params) {
 
   pJS.fn.particlesCreate = function () {
     for (let i = 0; i < pJS.particles.number.value; i++) {
-      pJS.particles.array.push(new pJS.fn.particle(pJS.particles.color, pJS.particles.opacity.value))
+      pJS.particles.array.push(new pJS.fn.Particle(pJS.particles.color, pJS.particles.opacity.value))
     }
   }
 
   pJS.fn.particlesUpdate = function () {
-    let new_pos
+    let newPos
     for (let i = 0; i < pJS.particles.array.length; i++) {
       /* the particle */
       const p = pJS.particles.array[i]
@@ -583,14 +591,14 @@ const particles = function (tag_id, params) {
 
       /* change particle position if it is out of canvas */
       if (pJS.particles.move.out_mode === 'bounce') {
-        new_pos = {
+        newPos = {
           x_left: p.radius,
           x_right: pJS.canvas.w,
           y_top: p.radius,
           y_bottom: pJS.canvas.h
         }
       } else {
-        new_pos = {
+        newPos = {
           x_left: -p.radius,
           x_right: pJS.canvas.w + p.radius,
           y_top: -p.radius,
@@ -599,17 +607,17 @@ const particles = function (tag_id, params) {
       }
 
       if (p.x - p.radius > pJS.canvas.w) {
-        p.x = new_pos.x_left
+        p.x = newPos.x_left
         p.y = Math.random() * pJS.canvas.h
       } else if (p.x + p.radius < 0) {
-        p.x = new_pos.x_right
+        p.x = newPos.x_right
         p.y = Math.random() * pJS.canvas.h
       }
       if (p.y - p.radius > pJS.canvas.h) {
-        p.y = new_pos.y_top
+        p.y = newPos.y_top
         p.x = Math.random() * pJS.canvas.w
       } else if (p.y + p.radius < 0) {
-        p.y = new_pos.y_bottom
+        p.y = newPos.y_bottom
         p.x = Math.random() * pJS.canvas.w
       }
 
@@ -685,7 +693,7 @@ const particles = function (tag_id, params) {
     cancelRequestAnimFrame(pJS.fn.checkAnimFrame)
     cancelRequestAnimFrame(pJS.fn.drawAnimFrame)
     pJS.tmp.source_svg = undefined
-    pJS.tmp.img_obj = undefined
+    pJS.tmp.imgObj = undefined
     pJS.tmp.count_svg = 0
     pJS.fn.particlesEmpty()
     pJS.fn.canvasClear()
@@ -703,15 +711,15 @@ const particles = function (tag_id, params) {
 
     /* draw a line between p1 and p2 if the distance between them is under the config distance */
     if (dist <= pJS.particles.line_linked.distance) {
-      const opacity_line = pJS.particles.line_linked.opacity -
+      const opacityLine = pJS.particles.line_linked.opacity -
         (dist / (1 / pJS.particles.line_linked.opacity)) /
         pJS.particles.line_linked.distance
 
-      if (opacity_line > 0) {
+      if (opacityLine > 0) {
         /* style */
-        const color_line = pJS.particles.line_linked.color_rgb_line
+        const colorLine = pJS.particles.line_linked.color_rgb_line
 
-        pJS.canvas.ctx.strokeStyle = rgba(color_line.r, color_line.g, color_line.b, opacity_line)
+        pJS.canvas.ctx.strokeStyle = rgba(colorLine.r, colorLine.g, colorLine.b, opacityLine)
         pJS.canvas.ctx.lineWidth = pJS.particles.line_linked.width
         // pJS.canvas.ctx.lineCap = 'round' /* performance issue */
 
@@ -747,9 +755,9 @@ const particles = function (tag_id, params) {
     const dx = p1.x - p2.x
     const dy = p1.y - p2.y
     const dist = Math.sqrt(dx * dx + dy * dy)
-    const dist_p = p1.radius + p2.radius
+    const distP = p1.radius + p2.radius
 
-    if (dist <= dist_p) {
+    if (dist <= distP) {
       p1.vx = -p1.vx
       p1.vy = -p1.vy
 
@@ -764,12 +772,12 @@ const particles = function (tag_id, params) {
     pJS.tmp.pushing = true
     for (let i = 0; i < nb; i++) {
       pJS.particles.array.push(
-        new pJS.fn.particle(
+        new pJS.fn.Particle(
           pJS.particles.color,
           pJS.particles.opacity.value,
           {
-            x: pos ? pos.pos_x : Math.random() * pJS.canvas.w,
-            y: pos ? pos.pos_y : Math.random() * pJS.canvas.h
+            x: pos ? pos.posX : Math.random() * pJS.canvas.w,
+            y: pos ? pos.posY : Math.random() * pJS.canvas.h
           }
         )
       )
@@ -790,18 +798,18 @@ const particles = function (tag_id, params) {
   }
 
   pJS.fn.modes.bubbleParticle = function (p) {
-    const time_spent = (new Date().getTime() - pJS.interactivity.mouse.click_time) / 1000
+    const timeSpent = (new Date().getTime() - pJS.interactivity.mouse.click_time) / 1000
     let opacity
     let size
-    let dx_mouse
-    let dy_mouse
-    let dist_mouse
+    let dxMouse
+    let dyMouse
+    let distMouse
     /* on hover event */
     if (pJS.interactivity.events.onhover.enable && isInArray('bubble', pJS.interactivity.events.onhover.mode)) {
-      dx_mouse = p.x - pJS.interactivity.mouse.pos_x
-      dy_mouse = p.y - pJS.interactivity.mouse.pos_y
-      dist_mouse = Math.sqrt(dx_mouse * dx_mouse + dy_mouse * dy_mouse)
-      const ratio = 1 - dist_mouse / pJS.interactivity.modes.bubble.distance
+      dxMouse = p.x - pJS.interactivity.mouse.posX
+      dyMouse = p.y - pJS.interactivity.mouse.posY
+      distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
+      const ratio = 1 - distMouse / pJS.interactivity.modes.bubble.distance
 
       const init = function () {
         p.opacity_bubble = p.opacity
@@ -809,7 +817,7 @@ const particles = function (tag_id, params) {
       }
 
       /* mousemove - check ratio */
-      if (dist_mouse <= pJS.interactivity.modes.bubble.distance) {
+      if (distMouse <= pJS.interactivity.modes.bubble.distance) {
         if (ratio >= 0 && pJS.interactivity.status === 'mousemove') {
           /* size */
           if (pJS.interactivity.modes.bubble.size !== pJS.particles.size.value) {
@@ -852,38 +860,37 @@ const particles = function (tag_id, params) {
       if (pJS.interactivity.status === 'mouseleave') {
         init()
       }
-    }
 
-    /* on click event */
-    else if (pJS.interactivity.events.onclick.enable && isInArray('bubble', pJS.interactivity.events.onclick.mode)) {
+      /* on click event */
+    } else if (pJS.interactivity.events.onclick.enable && isInArray('bubble', pJS.interactivity.events.onclick.mode)) {
       if (pJS.tmp.bubble_clicking) {
-        dx_mouse = p.x - pJS.interactivity.mouse.click_pos_x
-        dy_mouse = p.y - pJS.interactivity.mouse.click_pos_y
-        dist_mouse = Math.sqrt(dx_mouse * dx_mouse + dy_mouse * dy_mouse)
+        dxMouse = p.x - pJS.interactivity.mouse.click_posX
+        dyMouse = p.y - pJS.interactivity.mouse.click_posY
+        distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
 
-        if (time_spent > pJS.interactivity.modes.bubble.duration) {
+        if (timeSpent > pJS.interactivity.modes.bubble.duration) {
           pJS.tmp.bubble_duration_end = true
         }
 
-        if (time_spent > pJS.interactivity.modes.bubble.duration * 2) {
+        if (timeSpent > pJS.interactivity.modes.bubble.duration * 2) {
           pJS.tmp.bubble_clicking = false
           pJS.tmp.bubble_duration_end = false
         }
       }
 
-      const process = function (bubble_param, particles_param, p_obj_bubble, p_obj, id) {
+      const process = function (bubbleParam, particlesParam, pObjBubble, pObj, id) {
         let value
         let obj
-        if (bubble_param !== particles_param) {
+        if (bubbleParam !== particlesParam) {
           if (!pJS.tmp.bubble_duration_end) {
-            if (dist_mouse <= pJS.interactivity.modes.bubble.distance) {
-              if (p_obj_bubble !== undefined) {
-                obj = p_obj_bubble
+            if (distMouse <= pJS.interactivity.modes.bubble.distance) {
+              if (pObjBubble !== undefined) {
+                obj = pObjBubble
               } else {
-                obj = p_obj
+                obj = pObj
               }
-              if (obj !== bubble_param) {
-                value = p_obj - (time_spent * (p_obj - bubble_param) / pJS.interactivity.modes.bubble.duration)
+              if (obj !== bubbleParam) {
+                value = pObj - (timeSpent * (pObj - bubbleParam) / pJS.interactivity.modes.bubble.duration)
                 if (id === 'size') p.radius_bubble = value
                 if (id === 'opacity') p.opacity_bubble = value
               }
@@ -892,10 +899,10 @@ const particles = function (tag_id, params) {
               if (id === 'opacity') p.opacity_bubble = undefined
             }
           } else {
-            if (p_obj_bubble !== undefined) {
-              const value_tmp = p_obj - (time_spent * (p_obj - bubble_param) / pJS.interactivity.modes.bubble.duration)
-              const dif = bubble_param - value_tmp
-              value = bubble_param + dif
+            if (pObjBubble !== undefined) {
+              const valueTemp = pObj - (timeSpent * (pObj - bubbleParam) / pJS.interactivity.modes.bubble.duration)
+              const dif = bubbleParam - valueTemp
+              value = bubbleParam + dif
               if (id === 'size') p.radius_bubble = value
               if (id === 'opacity') p.opacity_bubble = value
             }
@@ -915,14 +922,14 @@ const particles = function (tag_id, params) {
   pJS.fn.modes.repulseParticle = function (p) {
     let repulseRadius
     if (pJS.interactivity.events.onhover.enable && isInArray('repulse', pJS.interactivity.events.onhover.mode) && pJS.interactivity.status === 'mousemove') {
-      const dx_mouse = p.x - pJS.interactivity.mouse.pos_x
-      const dy_mouse = p.y - pJS.interactivity.mouse.pos_y
-      const dist_mouse = Math.sqrt(dx_mouse * dx_mouse + dy_mouse * dy_mouse)
+      const dxMouse = p.x - pJS.interactivity.mouse.posX
+      const dyMouse = p.y - pJS.interactivity.mouse.posY
+      const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
 
-      const normVec = { x: dx_mouse / dist_mouse, y: dy_mouse / dist_mouse }
+      const normVec = { x: dxMouse / distMouse, y: dyMouse / distMouse }
       repulseRadius = pJS.interactivity.modes.repulse.distance
       const velocity = 100
-      const repulseFactor = clamp((1 / repulseRadius) * (-1 * Math.pow(dist_mouse / repulseRadius, 2) + 1) * repulseRadius * velocity, 0, 50)
+      const repulseFactor = clamp((1 / repulseRadius) * (-1 * Math.pow(distMouse / repulseRadius, 2) + 1) * repulseRadius * velocity, 0, 50)
 
       const pos = {
         x: p.x + normVec.x * repulseFactor,
@@ -947,8 +954,8 @@ const particles = function (tag_id, params) {
       if (pJS.tmp.repulse_clicking) {
         repulseRadius = Math.pow(pJS.interactivity.modes.repulse.distance / 6, 3)
 
-        const dx = pJS.interactivity.mouse.click_pos_x - p.x
-        const dy = pJS.interactivity.mouse.click_pos_y - p.y
+        const dx = pJS.interactivity.mouse.click_posX - p.x
+        const dy = pJS.interactivity.mouse.click_posY - p.y
         const d = dx * dx + dy * dy
 
         const force = -repulseRadius / d
@@ -987,25 +994,25 @@ const particles = function (tag_id, params) {
 
   pJS.fn.modes.grabParticle = function (p) {
     if (pJS.interactivity.events.onhover.enable && pJS.interactivity.status === 'mousemove') {
-      const dx_mouse = p.x - pJS.interactivity.mouse.pos_x
-      const dy_mouse = p.y - pJS.interactivity.mouse.pos_y
-      const dist_mouse = Math.sqrt(dx_mouse * dx_mouse + dy_mouse * dy_mouse)
+      const dxMouse = p.x - pJS.interactivity.mouse.posX
+      const dyMouse = p.y - pJS.interactivity.mouse.posY
+      const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
 
       /* draw a line between the cursor and the particle if the distance between them is under the config distance */
-      if (dist_mouse <= pJS.interactivity.modes.grab.distance) {
-        const opacity_line = pJS.interactivity.modes.grab.line_linked.opacity - (dist_mouse / (1 / pJS.interactivity.modes.grab.line_linked.opacity)) / pJS.interactivity.modes.grab.distance
+      if (distMouse <= pJS.interactivity.modes.grab.distance) {
+        const opacityLine = pJS.interactivity.modes.grab.line_linked.opacity - (distMouse / (1 / pJS.interactivity.modes.grab.line_linked.opacity)) / pJS.interactivity.modes.grab.distance
 
-        if (opacity_line > 0) {
+        if (opacityLine > 0) {
           /* style */
-          const color_line = pJS.particles.line_linked.color_rgb_line
-          pJS.canvas.ctx.strokeStyle = rgba(color_line.r, color_line.g, color_line.b, opacity_line)
+          const colorLine = pJS.particles.line_linked.color_rgb_line
+          pJS.canvas.ctx.strokeStyle = rgba(colorLine.r, colorLine.g, colorLine.b, opacityLine)
           pJS.canvas.ctx.lineWidth = pJS.particles.line_linked.width
           // pJS.canvas.ctx.lineCap = 'round' /* performance issue */
 
           /* path */
           pJS.canvas.ctx.beginPath()
           pJS.canvas.ctx.moveTo(p.x, p.y)
-          pJS.canvas.ctx.lineTo(pJS.interactivity.mouse.pos_x, pJS.interactivity.mouse.pos_y)
+          pJS.canvas.ctx.lineTo(pJS.interactivity.mouse.posX, pJS.interactivity.mouse.posY)
           pJS.canvas.ctx.stroke()
           pJS.canvas.ctx.closePath()
         }
@@ -1026,28 +1033,28 @@ const particles = function (tag_id, params) {
     if (pJS.interactivity.events.onhover.enable || pJS.interactivity.events.onclick.enable) {
       /* el on mousemove */
       pJS.interactivity.el.addEventListener('mousemove', function (e) {
-        let pos_x
-        let pos_y
+        let posX
+        let posY
         if (pJS.interactivity.el === window) {
-          pos_x = e.clientX
-          pos_y = e.clientY
+          posX = e.clientX
+          posY = e.clientY
         } else {
-          pos_x = e.offsetX || e.clientX
-          pos_y = e.offsetY || e.clientY
+          posX = e.offsetX || e.clientX
+          posY = e.offsetY || e.clientY
         }
-        pJS.interactivity.mouse.pos_x = pos_x
-        pJS.interactivity.mouse.pos_y = pos_y
+        pJS.interactivity.mouse.posX = posX
+        pJS.interactivity.mouse.posY = posY
         if (pJS.tmp.retina) {
-          pJS.interactivity.mouse.pos_x *= pJS.canvas.pxratio
-          pJS.interactivity.mouse.pos_y *= pJS.canvas.pxratio
+          pJS.interactivity.mouse.posX *= pJS.canvas.pxratio
+          pJS.interactivity.mouse.posY *= pJS.canvas.pxratio
         }
         pJS.interactivity.status = 'mousemove'
       })
 
       /* el on onmouseleave */
       pJS.interactivity.el.addEventListener('mouseleave', function () {
-        pJS.interactivity.mouse.pos_x = null
-        pJS.interactivity.mouse.pos_y = null
+        pJS.interactivity.mouse.posX = null
+        pJS.interactivity.mouse.posY = null
         pJS.interactivity.status = 'mouseleave'
       })
     }
@@ -1055,8 +1062,8 @@ const particles = function (tag_id, params) {
     /* on click event */
     if (pJS.interactivity.events.onclick.enable) {
       pJS.interactivity.el.addEventListener('click', function () {
-        pJS.interactivity.mouse.click_pos_x = pJS.interactivity.mouse.pos_x
-        pJS.interactivity.mouse.click_pos_y = pJS.interactivity.mouse.pos_y
+        pJS.interactivity.mouse.click_posX = pJS.interactivity.mouse.posX
+        pJS.interactivity.mouse.click_posY = pJS.interactivity.mouse.posY
         pJS.interactivity.mouse.click_time = new Date().getTime()
 
         if (pJS.interactivity.events.onclick.enable) {
@@ -1104,12 +1111,12 @@ const particles = function (tag_id, params) {
       }
 
       /* calc number of particles based on density area */
-      const nb_particles = area * pJS.particles.number.value / pJS.particles.number.density.value_area
+      const nbParticles = area * pJS.particles.number.value / pJS.particles.number.density.value_area
 
       /* add or remove X particles */
-      const missing_particles = pJS.particles.array.length - nb_particles
-      if (missing_particles < 0) pJS.fn.modes.pushParticles(Math.abs(missing_particles))
-      else pJS.fn.modes.removeParticles(missing_particles)
+      const missingParticles = pJS.particles.array.length - nbParticles
+      if (missingParticles < 0) pJS.fn.modes.pushParticles(Math.abs(missingParticles))
+      else pJS.fn.modes.removeParticles(missingParticles)
     }
   }
 
@@ -1134,13 +1141,13 @@ const particles = function (tag_id, params) {
     const svgXml = pJS.tmp.source_svg
     const rgbHex = /#([0-9A-F]{3,6})/gi
     const coloredSvgXml = svgXml.replace(rgbHex, function () {
-      let color_value
+      let colorValue
       if (p.color.rgb) {
-        color_value = rgba(p.color.rgb.r, p.color.rgb.g, p.color.rgb.b, p.opacity)
+        colorValue = rgba(p.color.rgb.r, p.color.rgb.g, p.color.rgb.b, p.opacity)
       } else {
-        color_value = hsla(p.color.hsl.h, p.color.hsl.s, p.color.hsl.l, p.opacity)
+        colorValue = hsla(p.color.hsl.h, p.color.hsl.s, p.color.hsl.l, p.opacity)
       }
-      return color_value
+      return colorValue
     })
 
     /* prepare to create img with colored svg */
@@ -1161,7 +1168,7 @@ const particles = function (tag_id, params) {
 
   pJS.fn.vendors.destroypJS = function () {
     cancelAnimationFrame(pJS.fn.drawAnimFrame)
-    canvas_el.remove()
+    canvasElement.remove()
     pJSDom = null
   }
 
@@ -1211,7 +1218,7 @@ const particles = function (tag_id, params) {
       } else {
         const img = new Image()
         img.addEventListener('load', function () {
-          pJS.tmp.img_obj = img
+          pJS.tmp.imgObj = img
           pJS.fn.vendors.checkBeforeDraw()
         })
         img.src = pJS.particles.shape.image.src
@@ -1234,7 +1241,7 @@ const particles = function (tag_id, params) {
           if (!pJS.tmp.img_error) pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw)
         }
       } else {
-        if (pJS.tmp.img_obj !== undefined) {
+        if (pJS.tmp.imgObj !== undefined) {
           pJS.fn.particlesDraw()
           if (!pJS.particles.move.enable) cancelRequestAnimFrame(pJS.fn.drawAnimFrame)
           else pJS.fn.drawAnimFrame = requestAnimFrame(pJS.fn.vendors.draw)
@@ -1297,56 +1304,56 @@ const particles = function (tag_id, params) {
 
 /* ---------- particles.js functions - start ------------ */
 
-const particlesJS = function (tag_id, params) {
+const particlesJS = function (tagId, params) {
   /* no string id? so it's object params, and set the id with default id */
-  if (typeof (tag_id) !== 'string') {
-    params = tag_id
-    tag_id = 'particles-js'
+  if (typeof (tagId) !== 'string') {
+    params = tagId
+    tagId = 'particles-js'
   }
 
   /* no id? set the id to default id */
-  if (!tag_id) {
-    tag_id = 'particles-js'
+  if (!tagId) {
+    tagId = 'particles-js'
   }
 
   /* pJS elements */
-  const pJS_tag = document.getElementById(tag_id)
-  const pJS_canvas_class = 'particles-js-canvas-el'
-  const exist_canvas = pJS_tag.getElementsByClassName(pJS_canvas_class)
+  const particlesTag = document.getElementById(tagId)
+  const particlesCanvasClass = 'particles-js-canvas-el'
+  const existCanvas = particlesTag.getElementsByClassName(particlesCanvasClass)
 
   /* remove canvas if exists into the pJS target tag */
-  if (exist_canvas.length) {
-    while (exist_canvas.length > 0) {
-      pJS_tag.removeChild(exist_canvas[0])
+  if (existCanvas.length) {
+    while (existCanvas.length > 0) {
+      particlesTag.removeChild(existCanvas[0])
     }
   }
 
   /* create canvas element */
-  const canvas_el = document.createElement('canvas')
-  canvas_el.className = pJS_canvas_class
+  const canvasElement = document.createElement('canvas')
+  canvasElement.className = particlesCanvasClass
 
   /* set size canvas */
-  canvas_el.style.width = '100%'
-  canvas_el.style.height = '100%'
+  canvasElement.style.width = '100%'
+  canvasElement.style.height = '100%'
 
   /* append canvas */
-  const canvas = document.getElementById(tag_id).appendChild(canvas_el)
+  const canvas = document.getElementById(tagId).appendChild(canvasElement)
 
   /* launch particle.js */
   if (canvas !== null) {
-    pJSDom.push(new particles(tag_id, params))
+    pJSDom.push(new Particles(tagId, params))
   }
 }
 
-particlesJS.load = function (tag_id, path_config_json, callback) {
+particlesJS.load = function (tagId, pathConfigJson, callback) {
   /* load json config */
   const xhr = new XMLHttpRequest()
-  xhr.open('GET', path_config_json)
+  xhr.open('GET', pathConfigJson)
   xhr.onreadystatechange = function (data) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         const params = JSON.parse(data.currentTarget.response)
-        particlesJS(tag_id, params)
+        particlesJS(tagId, params)
         if (callback) callback()
       } else {
         console.log('Error pJS - XMLHttpRequest status: ' + xhr.status)
