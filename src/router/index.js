@@ -10,9 +10,7 @@ import store from '@/store';
 
 Vue.use(Router);
 
-const _import = function(page) {
-  return () => import(`@/views/${page}/index.vue`);
-};
+const _import = page => () => import(`@/views/${page}/index.vue`);
 
 // 全局路由(无需嵌套上左右整体布局)
 const globalRoutes = [
@@ -29,12 +27,18 @@ const mainRoute = {
   children: [
     { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '首页' } }
   ],
+
+  // 进入路由前检查权限
   beforeEnter(to, from, next) {
     const token = store.getters.token;
     const expire = store.getters.expireTime;
     const currentDate = new Date();
 
-    console.log(`==> (check token)\n==> token: ${token}\n==> expire: ${expire}\n==> current: ${currentDate}\n`);
+    console.log(
+      `==> token(check)
+      ==> token: ${token}
+      ==> expire: ${expire}
+      ==> current: ${currentDate}\n`);
 
     // token 为空, token 过期跳转到登录
     if (!token || token === '' || expire || expire < currentDate) {
