@@ -71,11 +71,11 @@ http.interceptors.response.use(response => {
     response: ${error.response.data ? JSON.stringify(error.response.data) : error.response.data}`)
 
   // 尝试报错
-  const response = error.response
-  console.log(response.data)
   const data = error.response.data
-  if (data) {
+  if (data.message && data.code) {
     Message.error(`${data.message} (${data.code})`)
+  } else {
+    console.error('===> error(response)', error.response)
   }
 
   return Promise.reject(error)
