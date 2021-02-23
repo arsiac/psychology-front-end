@@ -26,6 +26,5 @@ export default {
   },
   mounted () {
     particlesJS('particle', particleSetting)
-    this.loadCaptcha()
   }
 }
