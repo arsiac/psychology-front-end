@@ -15,7 +15,11 @@ export default {
         code: [{ required: true, trigger: 'blur', message: '验证码不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
       },
+
+      // 验证码
       captcha: '',
+
+      // 验证码加载动画
       captchaLoading: false
     }
   },
@@ -37,7 +41,7 @@ export default {
               // 存储 新的用户信息
               this.updateStore(data.data)
               this.$message.success('登陆成功')
-              this.$router.push({ name: 'home' })
+              this.$router.push({ name: 'main' })
             } else {
               this.loadCaptcha()
             }
@@ -59,8 +63,8 @@ export default {
       loginApi.captcha().then(response => {
         if (response.status === 200) {
           // 显示图片
-          const imageArray = new Uint8Array(response.data)
-          this.captcha = `data:image/png;base64,${btoa(imageArray.reduce((data, byte) => data + String.fromCharCode(byte), ''))}`
+          const imageArray    = new Uint8Array(response.data)
+          this.captcha        = `data:image/png;base64,${btoa(imageArray.reduce((data, byte) => data + String.fromCharCode(byte), ''))}`
           // 提取验证码的id
           this.loginForm.uuid = response.headers['captcha-id']
         } else {
