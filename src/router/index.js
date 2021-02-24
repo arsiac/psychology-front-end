@@ -35,10 +35,13 @@ const mainRoute = {
     const currentDate = new Date()
 
     console.log(
-      `==> token(check)
-      ==> token: ${token}
-      ==> expire: ${new Date(expire).toLocaleString()}
-      ==> current: ${currentDate.toLocaleString()}\n`)
+`************************************************************
+* ==> token(check)
+* ==> token: ${token}
+* ==> expire: ${new Date(expire).toLocaleString()}
+* ==> current: ${currentDate.toLocaleString()}
+************************************************************`
+    )
 
     // token 为空, token 过期跳转到登录
     if (!token || token === '' || !expire || expire < currentDate.getTime()) {

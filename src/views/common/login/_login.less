@@ -1,3 +1,4 @@
+@import "public/theme";
 
 .login-surface {
   width: 100%;
@@ -6,18 +7,16 @@
 }
 
 header {
-  .login-header {
-    width: 100%;
-    display: block;
-    font-size: 1.2em;
-    padding: 5px 15px;
-  }
+  width: 100%;
+  display: block;
+  font-size: 1.2em;
+  padding: 5px 15px;
 
   .header-title {
     margin: 15px 0;
     padding: 15px;
     line-height: 22px;
-    border-left: 5px solid #2a5e9e;
+    border-left: 5px solid @icon-color;
     border-radius: 0 2px 2px 0;
   }
 }
@@ -34,7 +33,7 @@ header {
   .particle-background {
     width: 100%;
     height: 100%;
-    background-color: #3f5571;
+    background-color: @main-black;
 
     canvas {
       display: block;
@@ -67,7 +66,7 @@ footer.footer {
 
   .form-title{
     margin-top: 30px;
-    border-color: #e6e6e6;
+    border-color: @black-text;
     border-width: 1px 0 0;
     font-size: 1.1em;
     color: #666;
@@ -83,12 +82,12 @@ footer.footer {
     margin-right: 20px;
     margin-top: 10px;
     font-size: .9em;
-    color: #2a5e9e;
+    color: @link-color;
     font-weight: normal;
     cursor: pointer;
 
     &:hover {
-      color: #0093d7;
+      color: @link-color-hover;
     }
   }
 }
