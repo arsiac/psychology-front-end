@@ -19,6 +19,10 @@ export default {
       captchaLoading: false
     }
   },
+  mounted () {
+    // 加载验证码
+    this.loadCaptcha()
+  },
   methods: {
     /**
      * 登录
@@ -30,10 +34,9 @@ export default {
           loginApi.login(this.loginForm).then(({ data }) => {
             this.loading = false
             if (data.code === 200) {
+              // 存储 新的用户信息
+              this.updateStore(data.data)
               this.$message.success('登陆成功')
-
-              // 存储 token
-              // this.$store.commit('updateAccessToken')
               this.$router.push({ name: 'home' })
             } else {
               this.loadCaptcha()
@@ -67,6 +70,15 @@ export default {
       }).catch(() => {
         this.captchaLoading = false
       })
+    },
+
+    // 更新 store 值
+    updateStore ({ userId, username, accessToken, expireTime }) {
+      this.$store.commit('user/updateId', userId)
+      this.$store.commit('user/updateName', username)
+      this.$store.commit('token/updateAccessToken', accessToken)
+      this.$store.commit('token/updateExpireTime', parseInt(expireTime))
+      console.log('==> $store', this.$store)
     }
   }
 }
