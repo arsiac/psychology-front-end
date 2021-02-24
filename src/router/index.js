@@ -4,9 +4,9 @@
  * 建议:
  * 1. 代码中路由统一使用name属性跳转(不使用path属性)
  */
-import Vue from 'vue'
+import Vue    from 'vue'
 import Router from 'vue-router'
-import store from '@/store'
+import store  from '@/store'
 
 Vue.use(Router)
 
@@ -30,18 +30,19 @@ const mainRoute = {
 
   // 进入路由前检查权限
   beforeEnter (to, from, next) {
-    const token = store.getters.token
-    const expire = store.getters.expireTime
+    const token       = store.getters.accessToken
+    const expire      = store.getters.expireTime
     const currentDate = new Date()
 
     console.log(
       `==> token(check)
       ==> token: ${token}
-      ==> expire: ${expire}
-      ==> current: ${currentDate}\n`)
+      ==> expire: ${new Date(expire).toLocaleString()}
+      ==> current: ${currentDate.toLocaleString()}\n`)
 
     // token 为空, token 过期跳转到登录
-    if (!token || token === '' || expire || expire < currentDate) {
+    if (!token || token === '' || !expire || expire < currentDate.getTime()) {
+      console.log('==> token验证失败, 跳转到登录')
       next({ name: 'login' })
     }
     next()
