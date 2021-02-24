@@ -9,11 +9,7 @@ const USER_CENTRE = SERVER.USER_CENTRE
  * @param form 登录表单
  * */
 function register (form) {
-  return http({
-    url: `${USER_CENTRE}/register`,
-    method: HTTP_METHOD.POST,
-    data: form
-  })
+  return http.post(`${USER_CENTRE}/register`, form)
 }
 
 /**
@@ -22,11 +18,7 @@ function register (form) {
  * @param form 登录表单
  * */
 function login (form) {
-  return http({
-    url: `${USER_CENTRE}/login`,
-    method: HTTP_METHOD.POST,
-    data: form
-  })
+  return http.$post(`${USER_CENTRE}/login`, form)
 }
 
 /**
@@ -35,11 +27,7 @@ function login (form) {
  * @param id 用户id
  * */
 function logout (id) {
-  return http({
-    url: `${USER_CENTRE}/logout`,
-    method: HTTP_METHOD.POST,
-    data: { id }
-  })
+  return http.$post(`${USER_CENTRE}/logout`, { id })
 }
 
 /**
