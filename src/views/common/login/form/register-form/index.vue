@@ -35,7 +35,10 @@
       </div>
     </el-form-item>
     <div class="form-item">
-      <button v-loading="loading" type="button" @click="register">注册</button>
+      <button v-loading="loading" type="button" @click="register">
+        <span class="fa fa-smile-o"></span>
+        注册
+      </button>
     </div>
   </el-form>
 </template>

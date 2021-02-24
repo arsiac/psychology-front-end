@@ -8,7 +8,7 @@ const particleSetting = {
     color: { value: '#fff' },
     opacity: { value: 0.5, random: true },
     size: { value: 3, random: true },
-    line_linked: { enable: true, distance: 150, color: '#ffffff', opacity: 0.4, width: 1 },
+    line_linked: { enable: true, distance: 150, color: '#6c7581', opacity: 0.4, width: 1 },
     move: { enable: true, speed: 5, direction: 'none' }
   }
 }
