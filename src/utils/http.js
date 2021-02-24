@@ -1,7 +1,7 @@
-import axios from 'axios'
-import router from '@/router'
-import store from '@/store'
-import { Message } from 'element-ui'
+import axios           from 'axios'
+import router          from '@/router'
+import store           from '@/store'
+import { Message }     from 'element-ui'
 import { HTTP_METHOD } from './constant'
 
 const http = axios.create({
@@ -17,22 +17,21 @@ const http = axios.create({
  */
 http.interceptors.request.use(config => {
   // 加入token
-  config.headers.authorization = store.getters.token
+  config.headers.authorization = store.getters.accessToken
 
   console.log(
     `==> HTTP(request)
-  url: ${config.url}
-  method: ${config.method}
-  data: `, config.data)
+    url: ${config.url}
+    method: ${config.method}
+    data: `, config.data)
 
   // 根据请求方式添加信息
-  const method = config.method.toLowerCase()
-  switch (method) {
-    case 'post':
+  switch (config.method) {
+    case HTTP_METHOD.POST:
       config.data.createBy = store.getters.id
 
     // eslint-disable-next-line no-fallthrough
-    case 'put':
+    case HTTP_METHOD.PUT:
       config.data.updateBy = store.getters.id
       break
     default:
@@ -80,8 +79,6 @@ http.interceptors.response.use(response => {
 
   return Promise.reject(error)
 })
-
-http.$methods = HTTP_METHOD
 
 http.$get = function (url, params) {
   const method = HTTP_METHOD.GET
