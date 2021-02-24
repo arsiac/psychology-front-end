@@ -20,5 +20,6 @@ module.exports = {
     'vue'
   ],
   rules: {
+    "no-multi-spaces": "off"
   }
 }
