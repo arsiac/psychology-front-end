@@ -12,30 +12,27 @@
       top: 8px;
       left: 5px;
       font-size: 20px;
-      color: @icon-color;
+      color: @gray-text-color;
     }
 
     input {
-      background-color: inherit;
+      background-color: @input-background-color;
       padding-left: 30px;
       width: 100%;
       display: block;
       height: 38px;
       line-height: 1.3;
-      border-width: 1px;
-      border-style: solid;
-      border-radius: 4px;
-      border-color: @icon-color;
+      border: none;
       outline: 0;
-      color: @icon-color;
+      color: @black-text-color;
       box-sizing: border-box;
 
       &:hover {
-        border-color: @icon-color-hover;
+        border-color: @input-background-color-hover;
       }
 
       &:focus {
-        border-color: @icon-color-hover;
+        border-color: @input-background-color-hover;
       }
     }
 
@@ -45,7 +42,7 @@
       height: 38px;
       line-height: 38px;
       padding: 0 18px;
-      background-color: @button-background;
+      background-color: @button-primary-color;
       color: #fff;
       white-space: nowrap;
       text-align: center;
@@ -56,7 +53,8 @@
       outline: 0;
 
       &:hover {
-        background-color: @button-background-hover;
+        background-color: @button-primary-color-hover;
+        box-shadow: 0 0.125rem 0.75rem @gary-border-color;
       }
     }
   }
