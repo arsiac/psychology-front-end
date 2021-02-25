@@ -38,8 +38,7 @@ http.interceptors.request.use(config => {
       break
   }
   return config
-}
-, error => {
+}, error => {
   return Promise.reject(error)
 })
 
@@ -55,12 +54,6 @@ http.interceptors.response.use(response => {
     headers: ${JSON.stringify(response.headers)}
     data: `, response.data)
 
-  // 401, token失效/无token
-  if (response.data && response.data.code === 401) {
-    console.warn('==> token失效/无token,跳转到登陆页面')
-    router.push({ name: 'login' })
-  }
-
   return response
 }, error => {
   console.error(
@@ -68,6 +61,18 @@ http.interceptors.response.use(response => {
     url: ${error.config.url}
     status: ${error.response.status}
     response: ${error.response.data ? JSON.stringify(error.response.data) : error.response.data}`)
+
+  // 处理错误
+  switch (error.response.status) {
+    case 401:
+      router.push({ name: 'login' })
+      break
+    case 404:
+      router.push({ name: '404' })
+      break
+    default:
+      break
+  }
 
   // 尝试报错
   const data = error.response.data
