@@ -40,7 +40,10 @@ export default {
             if (data.code === 200) {
               // 存储 新的用户信息
               this.updateStore(data.data)
-              this.$message.success('登陆成功')
+              this.$notify.success({
+                title: '提示',
+                message: '登陆成功'
+              })
               this.$router.push({ name: 'main' })
             } else {
               this.loadCaptcha()
@@ -50,7 +53,10 @@ export default {
             this.loadCaptcha()
           })
         } else {
-          this.$message.warning('请完善登录信息')
+          this.$notify.warning({
+            title: '警告',
+            message: '请完善登录信息'
+          })
         }
       })
     },
@@ -68,7 +74,10 @@ export default {
           // 提取验证码的id
           this.loginForm.uuid = response.headers['captcha-id']
         } else {
-          this.$message.warning('获取验证码失败')
+          this.$notify.warning({
+            title: '警告',
+            message: '获取验证码失败, 尝试刷新'
+          })
         }
         this.captchaLoading = false
       }).catch(() => {
@@ -82,7 +91,6 @@ export default {
       this.$store.commit('user/updateName', username)
       this.$store.commit('token/updateAccessToken', accessToken)
       this.$store.commit('token/updateExpireTime', parseInt(expireTime))
-      console.log('==> $store', this.$store)
     }
   }
 }
