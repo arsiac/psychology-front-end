@@ -1,6 +1,6 @@
 <template>
     <div class="e404">
-      404
+      404 Not Found.
     </div>
 </template>
 
