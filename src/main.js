@@ -13,10 +13,10 @@ Vue.use(less)
 Vue.use(ElementUI)
 
 // 挂载全局
-
 Vue.prototype.$auth = isAuth
 Vue.prototype.$message = ElementUI.Message
 Vue.prototype.$confirm = ElementUI.MessageBox.confirm
+Vue.prototype.$notify = ElementUI.Notification
 
 Vue.config.productionTip = false
 
