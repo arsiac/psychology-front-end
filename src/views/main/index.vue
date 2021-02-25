@@ -1,7 +1,8 @@
 <template>
     <div class="main">
-      MAIN
-      <router-view/>
+      <sidebar />
+      <navbar />
+      <page-content />
     </div>
 </template>
 
