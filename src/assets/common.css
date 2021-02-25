@@ -3,6 +3,19 @@ body {
   margin: 0;
 }
 
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+a:hover {
+ color: #888;
+}
+
+a:active {
+  color: #333;
+}
+
 .fl {
   float: left;
 }
