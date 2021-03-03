@@ -34,6 +34,53 @@
     padding: 10px 15px;
     box-sizing: border-box;
     height: calc(100% - 70px);
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    // menu
+    .group {
+      width: 230px;
+      margin: 0 auto;
+      user-select: none;
+
+      .group-title {
+        font-size: 1em;
+        font-weight: normal;
+        color: @gray-text-color;
+      }
+
+      .menu {
+        width: 100%;
+        margin: 10px 0;
+
+        li {
+          font-size: 1em;
+          font-weight: normal;
+          display: block;
+          box-sizing: border-box;
+          width: 200px;
+          margin: 0 auto;
+          color: @black-text-color;
+          padding: 5px 20px;
+          border-radius: 5px;
+          overflow: hidden;
+          cursor: pointer;
+
+          &:hover {
+            background-color: @sidebar-menu-item-background-color;
+            color: @dark-text-color;
+          }
+        }
+
+        .select {
+          background-color: @sidebar-menu-item-background-color;
+          color: @dark-text-color;
+        }
+      }
+    }
   }
 }
 
