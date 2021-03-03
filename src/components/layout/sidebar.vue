@@ -42,13 +42,8 @@ export default {
     }
   },
   mounted () {
-    const menuString = sessionStorage.getItem('menu')
     this.active = this.$store.getters.menuActive
-    if (menuString && menuString !== '') {
-      this.menu = JSON.parse(menuString)
-    } else {
-      this.$notify.error('加载菜单失败')
-    }
+    this.menu = this.$store.getters.menu
   },
   methods: {
     menuClick (to) {

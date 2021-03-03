@@ -2,14 +2,18 @@ export default {
   namespaced: true,
   state: {
     id: 0,
-    name: ''
+    name: '',
+    auth: []
   },
   mutations: {
-    updateId (state, id) {
-      state.id = id
+    updateId (s, id) {
+      s.id = id
     },
-    updateName (state, name) {
-      state.name = name
+    updateName (s, name) {
+      s.name = name
+    },
+    updateAuth (s, auth) {
+      s.auth = auth
     }
   }
 }

@@ -166,8 +166,8 @@ router.beforeEach((to, from, next) => {
           }
 
           router.options.isAddDynamicMenuRoutes = true
-          sessionStorage.setItem('menu', JSON.stringify(menuArray))
-          sessionStorage.setItem('auth', JSON.stringify(powerTree))
+          store.commit('menu/updateMenu', menuArray)
+          store.commit('user/updateAuth', powerTree)
           next({ ...to, replace: true })
         }
       })

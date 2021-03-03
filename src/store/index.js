@@ -16,9 +16,11 @@ export default new Vuex.Store({
   getters: {
     id: state => state.user.id,
     name: state => state.user.name,
+    auth: state => state.user.auth,
     accessToken: state => state.token.accessToken,
     expireTime: state => state.token.expireTime,
-    menuActive: state => state.menu.active
+    menuActive: state => state.menu.active,
+    menu: state => state.menu.menu
   },
   plugins: [createPersistedState()]
 })
