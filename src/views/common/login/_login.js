@@ -25,6 +25,7 @@ export default {
     RegisterForm
   },
   mounted () {
+    sessionStorage.setItem('menuActive', 'home')
     particlesJS('particle', particleSetting)
   }
 }

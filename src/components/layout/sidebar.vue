@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted () {
-    this.active = this.$store.getters.menuActive
+    this.active = sessionStorage.getItem('menuActive')
     this.menu = this.$store.getters.menu
   },
   methods: {
@@ -50,7 +50,7 @@ export default {
       // 如果已经被选择则不路由,避免报错
       if (this.active !== to) {
         this.active = to
-        this.$store.commit('menu/updateActive', to)
+        sessionStorage.setItem('menuActive', to)
         this.$router.push({ name: to })
       }
     }
