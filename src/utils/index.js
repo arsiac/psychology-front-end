@@ -1,8 +1,18 @@
+import store from '@/store'
 
 /**
  * 是否有权限
- * @param {*} key
+ * @param url 目标链接
+ * @param option 操作
+ *
+ * @return boolean
  */
-export function isAuth (key) {
-  return JSON.parse(sessionStorage.getItem('permissions') || '[]').indexOf(key) !== -1 || false
+export function isAuth (url, option) {
+  const auth = store.getters.auth
+
+  if (auth[url]) {
+    return auth[url][option] || false
+  }
+
+  return false
 }
