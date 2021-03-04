@@ -91,7 +91,27 @@
 
   .navbar-container {
     height: @header-height;
-    padding: 10px 0 10px 250px;
+    padding: 10px 20px 10px 250px;
+
+    .nav-user {
+      float: right;
+
+      button {
+        background-color: @navbar-background-color;
+        border: none;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: @light-gray-text-color;
+        cursor: pointer;
+        padding: 5px 10px;
+        margin-top: 10px;
+        outline: none;
+
+        &:hover {
+          color: @white-text-color;
+        }
+      }
+    }
   }
 }
 

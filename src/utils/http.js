@@ -63,15 +63,8 @@ http.interceptors.response.use(response => {
     response: ${error.response.data ? JSON.stringify(error.response.data) : error.response.data}`)
 
   // 处理错误
-  switch (error.response.status) {
-    case 401:
-      router.push({ name: 'login' })
-      break
-    case 404:
-      router.push({ name: '404' })
-      break
-    default:
-      break
+  if (error.response.status === 401) {
+    router.push({ name: 'login' })
   }
 
   // 尝试报错
@@ -96,6 +89,7 @@ http.$post = function (url, data) {
 }
 
 http.$put = function (url, data) {
+  console.log('put')
   const method = HTTP_METHOD.PUT
   return http({ url, data, method })
 }
