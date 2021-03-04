@@ -47,6 +47,7 @@ function authentication () {
  * */
 function checkAndSet (obj, key, valueKey, value) {
   if (!obj || !key || !valueKey) {
+    console.warn(`[warn] checkAndSet: obj: ${obj}, key: ${key}, valueKey: ${valueKey}`)
     return
   }
 
@@ -97,7 +98,6 @@ router.beforeEach((to, from, next) => {
   if (router.options.isAddDynamicMenuRoutes) {
     next()
   } else {
-    console.log('添加动态路由')
     const userId = store.getters.id
     systemApi.getResourceByUserId(userId)
       .then(response => {
@@ -110,7 +110,7 @@ router.beforeEach((to, from, next) => {
 
           data.forEach(value => {
             // 没有父节点，为菜单分组
-            if (value.parent === null) {
+            if (!value.parent) {
               checkAndSet(menuRoot, value.id, 'name', value.name)
             }
 
@@ -126,7 +126,12 @@ router.beforeEach((to, from, next) => {
 
               // 添加菜单
               if (value.parent) {
-                checkAndSet(menuRoot, value.parent, 'children', [])
+                if (!menuRoot[value.parent]) {
+                  menuRoot[value.parent] = {}
+                }
+                if (!menuRoot[value.parent].children) {
+                  menuRoot[value.parent].children = []
+                }
                 menuRoot[value.parent].children.push({
                   url: value.uri.replace('url:', ''),
                   name: value.name,
@@ -166,8 +171,9 @@ router.beforeEach((to, from, next) => {
           }
 
           router.options.isAddDynamicMenuRoutes = true
-          store.commit('menu/updateMenu', menuArray)
-          store.commit('user/updateAuth', powerTree)
+          console.log(menuRoot)
+          sessionStorage.setItem('menu', JSON.stringify(menuArray))
+          sessionStorage.setItem('auth', JSON.stringify(powerTree))
           next({ ...to, replace: true })
         }
       })
