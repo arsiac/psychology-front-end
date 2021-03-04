@@ -89,9 +89,10 @@ export default {
   },
   methods: {
     init (row) {
-      this.dataForm = Object.assign({}, row) || {}
-      this.title    = !row ? '新增' : '修改'
-      this.visible  = true
+      this.dataForm   = Object.assign({}, row) || {}
+      this.title      = !row ? '新增' : '修改'
+      this.visible    = true
+      this.searchData = null
     },
     queryResource (name, cb) {
       resourceApi.fuzzy({ name }).then(({ data }) => {
