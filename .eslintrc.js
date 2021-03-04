@@ -20,6 +20,7 @@ module.exports = {
     'vue'
   ],
   rules: {
-    "no-multi-spaces": "off"
+    "no-multi-spaces": "off",
+    "dot-notation": "off"
   }
 }
