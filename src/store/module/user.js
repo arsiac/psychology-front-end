@@ -2,8 +2,7 @@ export default {
   namespaced: true,
   state: {
     id: 0,
-    name: '',
-    auth: []
+    name: ''
   },
   mutations: {
     updateId (s, id) {
@@ -11,9 +10,6 @@ export default {
     },
     updateName (s, name) {
       s.name = name
-    },
-    updateAuth (s, auth) {
-      s.auth = auth
     }
   }
 }

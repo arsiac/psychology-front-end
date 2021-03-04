@@ -1,5 +1,3 @@
-import store from '@/store'
-
 /**
  * 是否有权限
  * @param url 目标链接
@@ -8,7 +6,7 @@ import store from '@/store'
  * @return boolean
  */
 export function isAuth (url, option) {
-  const auth = store.getters.auth
+  const auth = JSON.parse(sessionStorage.getItem('auth'))
 
   if (auth[url]) {
     return auth[url][option] || false

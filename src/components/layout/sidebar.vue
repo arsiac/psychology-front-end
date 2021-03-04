@@ -43,7 +43,7 @@ export default {
   },
   mounted () {
     this.active = sessionStorage.getItem('menuActive')
-    this.menu = this.$store.getters.menu
+    this.menu = JSON.parse(sessionStorage.getItem('menu'))
   },
   methods: {
     menuClick (to) {
