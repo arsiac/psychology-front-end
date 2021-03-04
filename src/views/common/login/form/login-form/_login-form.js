@@ -42,7 +42,8 @@ export default {
               this.updateStore(data.data)
               this.$notify.success({
                 title: '提示',
-                message: '登陆成功'
+                message: '登陆成功',
+                duration: 800
               })
               this.$router.push({ name: 'main' })
             } else {
@@ -55,7 +56,8 @@ export default {
         } else {
           this.$notify.warning({
             title: '警告',
-            message: '请完善登录信息'
+            message: '请完善登录信息',
+            duration: 1000
           })
         }
       })
@@ -76,7 +78,8 @@ export default {
         } else {
           this.$notify.warning({
             title: '警告',
-            message: '获取验证码失败, 尝试刷新'
+            message: '获取验证码失败, 尝试刷新',
+            duration: 300
           })
         }
         this.captchaLoading = false
