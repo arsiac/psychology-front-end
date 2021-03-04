@@ -23,7 +23,7 @@ http.interceptors.request.use(config => {
     `==> HTTP(request)
     url: ${config.url}
     method: ${config.method}
-    data: `, config.data)
+    data: `, config.data, '\n    param: ', config.params)
 
   // 根据请求方式添加信息
   switch (config.method) {
