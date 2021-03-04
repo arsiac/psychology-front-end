@@ -38,11 +38,11 @@ export default {
   data () {
     return {
       menu: [],
-      active: 'home'
+      active: ''
     }
   },
   mounted () {
-    this.active = sessionStorage.getItem('menuActive')
+    this.active = sessionStorage.getItem('menuActive') || 'home'
     this.menu = JSON.parse(sessionStorage.getItem('menu'))
   },
   methods: {
