@@ -1,5 +1,5 @@
-import http from '@/utils/http'
-import { SERVER, HTTP_METHOD } from '@/utils/constant'
+import http                    from '@/utils/http'
+import { SERVER } from '@/utils/constant'
 
 const USER_URL = `${SERVER.USER_CENTRE}/user`
 
@@ -16,11 +16,7 @@ function all () {
  * @param user 用户信息
  * */
 function fuzzy (user) {
-  return http({
-    url: USER_URL,
-    method: HTTP_METHOD.GET,
-    param: user
-  })
+  return http.$get(USER_URL, user)
 }
 
 /**
@@ -29,10 +25,7 @@ function fuzzy (user) {
  * @param id 用户id
  * */
 function queryById (id) {
-  return http({
-    url: `${USER_URL}/${id}`,
-    method: HTTP_METHOD.GET
-  })
+  return http.$get(`${USER_URL}/${id}`)
 }
 
 /**
@@ -41,16 +34,63 @@ function queryById (id) {
  * @param user 用户信息
  * */
 function add (user) {
-  return http({
-    url: USER_URL,
-    method: HTTP_METHOD.POST
+  return http.$post(USER_URL, user)
+}
 
-  })
+/**
+ * 批量添加用户
+ *
+ * @param user 用户信息
+ * */
+function batchAdd (user) {
+  return http.$post(`${USER_URL}/batch`, user)
+}
+
+/**
+ * 修改用户
+ *
+ * @param user 用户信息
+ * */
+function modify (user) {
+  return http.$put(USER_URL, user)
+}
+
+/**
+ * 修改用户
+ *
+ * @param form 用户信息
+ * */
+function changePassword (form) {
+  console.log('cp')
+  return http.$put(`${USER_URL}/passwd`, form)
+}
+
+/**
+ * 删除用户
+ *
+ * @param user 用户信息
+ * */
+function remove (user) {
+  return http.$delete(USER_URL, user)
+}
+
+/**
+ * 批量删除用户
+ *
+ * @param user 用户信息
+ * */
+function batchRemove (user) {
+  return http.$delete(`${USER_URL}/batch`, user)
 }
 
 export default {
   all,
   fuzzy,
   queryById,
-  add
+  add,
+  batchAdd,
+  modify,
+  changePassword,
+  remove,
+  batchRemove
 }
