@@ -1,7 +1,7 @@
 import axios           from 'axios'
 import router          from '@/router'
 import store           from '@/store'
-import { Message }     from 'element-ui'
+import { Notification }     from 'element-ui'
 import { HTTP_METHOD } from './constant'
 
 const http = axios.create({
@@ -9,7 +9,7 @@ const http = axios.create({
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
   },
-  baseURL: 'http://arsiac.top:8010/'
+  baseURL: 'http://127.0.0.1:8010/'
 })
 
 /**
@@ -39,6 +39,7 @@ http.interceptors.request.use(config => {
   }
   return config
 }, error => {
+  console.error('request(error))', error)
   return Promise.reject(error)
 })
 
@@ -57,22 +58,25 @@ http.interceptors.response.use(response => {
   return response
 }, error => {
   console.error(
-    `===> HTTP(error)
+    `===> HTTP(response error)
     url: ${error.config.url}
     status: ${error.response.status}
     response: ${error.response.data ? JSON.stringify(error.response.data) : error.response.data}`)
 
-  // 处理错误
+  // 无权限
   if (error.response.status === 401) {
     router.push({ name: 'login' })
-  }
-
-  // 尝试报错
-  const data = error.response.data
-  if (data.message && data.code) {
-    Message.error(`${data.message} (${data.code})`)
   } else {
-    console.error('===> error(response)', error.response)
+    // 尝试报错
+    const data = error.response.data
+    if (data.message && data.code) {
+      Notification.error({
+        title: `代码: ${data.code}`,
+        message: data.message
+      })
+    } else {
+      console.error('===> error(response)', error.response)
+    }
   }
 
   return Promise.reject(error)
