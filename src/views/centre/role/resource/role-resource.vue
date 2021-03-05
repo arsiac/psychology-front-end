@@ -36,7 +36,7 @@
             width="80"
             label="操作">
           <template slot="header">
-            <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus" circle></el-button>
+            <el-button type="primary" @click="addOrUpdateHandle" icon="el-icon-plus" circle :disabled="!$auth('centre/role', 'post')"></el-button>
           </template>
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="deleteHandle(scope.row)">删除</el-button>
@@ -45,8 +45,8 @@
       </el-table>
 
       <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">关闭</el-button>
-    </span>
+        <el-button @click="visible = false">关闭</el-button>
+      </span>
     </el-dialog>
 
     <!-- 弹窗, 新增 / 修改 -->
