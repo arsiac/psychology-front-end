@@ -100,12 +100,12 @@
         </template>
       </el-table-column>
       <el-table-column
-          prop="parent"
+          prop="parentName"
           header-align="center"
           align="center"
           label="所属">
         <template slot-scope="scope">
-          <span v-if="scope.row.parent">{{ scope.row.parent }}</span>
+          <span v-if="scope.row.parentName">{{ scope.row.parentName }}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -118,17 +118,17 @@
       >
         <template slot-scope="scope">
           <el-button
-              v-if="$auth('centre/resource', 'put')"
               type="text"
               size="small"
               @click="addOrUpdateHandle(scope.row)"
+              :disabled="!$auth('centre/resource', 'put')"
           >修改
           </el-button>
           <el-button
-              v-if="$auth('centre/resource', 'delete')"
               type="text"
               size="small"
               @click="deleteHandle(scope.row)"
+              :disabled="!$auth('centre/resource', 'delete')"
           >删除
           </el-button>
         </template>
@@ -227,6 +227,7 @@ export default {
               message: '删除成功',
               title: '删除'
             })
+            this.getDataList()
           }
         })
       }).catch(_ => {
