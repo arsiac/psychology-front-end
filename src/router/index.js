@@ -121,6 +121,12 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  // 返回登陆后清空权限和目录
+  if (to.name ===  'login') {
+    sessionStorage.setItem('menu', '[]')
+    sessionStorage.setItem('auth', '{}')
+    router.options.isAddDynamicMenuRoutes = false
+  }
   if (router.options.isAddDynamicMenuRoutes || isGlobal(to.name)) {
     next()
   } else {
