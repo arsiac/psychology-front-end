@@ -47,7 +47,8 @@ function authentication () {
  * */
 function checkAndSet (obj, key, valueKey, value) {
   if (!obj || !key || !valueKey) {
-    console.warn(`[warn] checkAndSet: obj: ${obj}, key: ${key}, valueKey: ${valueKey}`)
+    console.warn(
+      `[warn] checkAndSet: obj: ${obj}, key: ${key}, valueKey: ${valueKey}`)
     return
   }
 
@@ -60,9 +61,29 @@ function checkAndSet (obj, key, valueKey, value) {
 
 // 全局路由(无需嵌套上左右整体布局)
 const globalRoutes = [
-  { path: '/404', component: _import('error/404'), name: '404', meta: { title: '404未找到' } },
-  { path: '/login', component: _import('common/login'), name: 'login', meta: { title: '登录' } }
+  {
+    path: '/404',
+    component: _import('error/404'),
+    name: '404',
+    meta: { title: '404未找到' }
+  },
+  {
+    path: '/login',
+    component: _import('common/login'),
+    name: 'login',
+    meta: { title: '登录' }
+  }
 ]
+
+function isGlobal (name) {
+  // eslint-disable-next-line no-unused-vars
+  for (const route of globalRoutes) {
+    if (route.name === name) {
+      return true
+    }
+  }
+  return false
+}
 
 const mainRoute = {
   path: '/',
@@ -71,7 +92,12 @@ const mainRoute = {
   redirect: { name: 'home' },
   meta: { title: '主路由' },
   children: [
-    { path: '/home', component: _import('common/home'), name: 'home', meta: { title: '首页' } }
+    {
+      path: '/home',
+      component: _import('common/home'),
+      name: 'home',
+      meta: { title: '首页' }
+    }
   ],
 
   // 进入路由前检查权限
@@ -95,88 +121,91 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (router.options.isAddDynamicMenuRoutes) {
+  if (router.options.isAddDynamicMenuRoutes || isGlobal(to.name)) {
     next()
   } else {
     const userId = store.getters.id
-    systemApi.getResourceByUserId(userId)
-      .then(response => {
-        const data = response.data.data
-        if (data && Array.isArray(data)) {
-          // 菜单树
-          const menuRoot  = {}
-          // 权限树
-          const powerRoot = {}
+    systemApi.getResourceByUserId(userId).then(response => {
+      const data = response.data.data
+      if (data && Array.isArray(data)) {
+        // 菜单树
+        const menuRoot  = {}
+        // 权限树
+        const powerRoot = {}
 
-          data.forEach(value => {
-            // 没有父节点，为菜单分组
-            if (!value.parent) {
-              checkAndSet(menuRoot, value.id, 'name', value.name)
-            }
+        data.forEach(value => {
+          // 没有父节点，为菜单分组
+          if (!value.parent) {
+            checkAndSet(menuRoot, value.id, 'name', value.name)
+          }
 
-            if (value.uri.match(/^url:/)) {
-              const url = value.uri.replace('url:', '')
-              // 添加路由
-              router.addRoute('main', {
-                path: `/${url}`,
-                component: _import(url),
+          if (value.uri.match(/^url:/)) {
+            const url = value.uri.replace('url:', '')
+            // 添加路由
+            router.addRoute('main', {
+              path: `/${url}`,
+              component: _import(url),
+              name: value.name,
+              meta: { title: value.name }
+            })
+
+            // 添加菜单
+            if (value.parent) {
+              if (!menuRoot[value.parent]) {
+                menuRoot[value.parent] = {}
+              }
+              if (!menuRoot[value.parent].children) {
+                menuRoot[value.parent].children = []
+              }
+              menuRoot[value.parent].children.push({
+                url: value.uri.replace('url:', ''),
                 name: value.name,
-                meta: { title: value.name }
+                icon: value.icon
               })
-
-              // 添加菜单
-              if (value.parent) {
-                if (!menuRoot[value.parent]) {
-                  menuRoot[value.parent] = {}
-                }
-                if (!menuRoot[value.parent].children) {
-                  menuRoot[value.parent].children = []
-                }
-                menuRoot[value.parent].children.push({
-                  url: value.uri.replace('url:', ''),
-                  name: value.name,
-                  icon: value.icon
-                })
-              } else {
-                console.warn(`[warn] menu item does not have parent node. -> name: ${value.name}, uri: ${value.uri}`)
-              }
-
-              // 添加权限对应url
-              checkAndSet(powerRoot, value.id, 'url', url)
-
-              // 添加权限
-            } else if (value.uri.match(/^op:/)) {
-              if (value.parent) {
-                checkAndSet(powerRoot, value.parent, value.uri.replace('op:', ''), true)
-              } else {
-                console.warn(`[warn] menu item does not have parent node. -> name: ${value.name}, uri: ${value.uri}`)
-              }
+            } else {
+              console.warn(
+                `[warn] menu item does not have parent node. -> name: ${value.name}, uri: ${value.uri}`)
             }
-          })
 
-          // 将菜单转为数组
-          const menuArray = []
-          // eslint-disable-next-line no-unused-vars
-          for (const item in menuRoot) {
-            menuArray.push(menuRoot[item])
+            // 添加权限对应url
+            checkAndSet(powerRoot, value.id, 'url', url)
+
+            // 添加权限
+          } else if (value.uri.match(/^op:/)) {
+            if (value.parent) {
+              checkAndSet(powerRoot, value.parent, value.uri.replace('op:', ''),
+                true)
+            } else {
+              console.warn(
+                `[warn] menu item does not have parent node. -> name: ${value.name}, uri: ${value.uri}`)
+            }
           }
+        })
 
-          // 将权限树属性名转为url
-          const powerTree = {}
-          // eslint-disable-next-line no-unused-vars
-          for (const property in powerRoot) {
-            const url = powerRoot[property].url
-            delete powerRoot[property].url
-            powerTree[url] = powerRoot[property]
-          }
-
-          router.options.isAddDynamicMenuRoutes = true
-          console.log(menuRoot)
-          sessionStorage.setItem('menu', JSON.stringify(menuArray))
-          sessionStorage.setItem('auth', JSON.stringify(powerTree))
-          next({ ...to, replace: true })
+        // 将菜单转为数组
+        const menuArray = []
+        // eslint-disable-next-line no-unused-vars
+        for (const item in menuRoot) {
+          menuArray.push(menuRoot[item])
         }
-      })
+
+        // 将权限树属性名转为url
+        const powerTree = {}
+        // eslint-disable-next-line no-unused-vars
+        for (const property in powerRoot) {
+          const url = powerRoot[property].url
+          delete powerRoot[property].url
+          powerTree[url] = powerRoot[property]
+        }
+
+        // 最后添加404, 防止一开始就404
+        router.addRoute({ path: '*', redirect: '/404', hidden: true })
+        router.options.isAddDynamicMenuRoutes = true
+        sessionStorage.setItem('menu', JSON.stringify(menuArray))
+        sessionStorage.setItem('auth', JSON.stringify(powerTree))
+        next({ ...to, replace: true })
+      }
+    })
   }
 })
 
