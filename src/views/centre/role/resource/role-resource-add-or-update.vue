@@ -71,7 +71,6 @@ export default {
       })
     },
     handleResourceSelect (value) {
-      console.log(value, this.dataForm)
       this.dataForm.resourceId = value.id
     },
     // 表单提交
