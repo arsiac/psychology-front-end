@@ -13,7 +13,7 @@
         <li>
           <ul class="menu">
             <li :class="active === 'home' ? 'select' : ''" @click="menuClick('home')">
-              <i class="fa fa-dashboard"></i>
+              <i class="menu-icon fa fa-dashboard"></i>
               首页
             </li>
           </ul>
@@ -22,7 +22,7 @@
           {{ item.name }}
           <ul class="menu">
             <li :class="active === subItem.name ? 'select' : ''" :key="i" v-for="(subItem, i) in item.children" @click="menuClick(subItem.name)">
-              <i :class="'fa ' + subItem.icon"></i>
+              <i :class="'menu-icon fa ' + subItem.icon"></i>
               {{ subItem.name }}
             </li>
           </ul>
