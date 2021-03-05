@@ -86,6 +86,7 @@ export default {
 
         case 'logout':
           loginApi.logout(this.$store.getters.id)
+          this.$store.commit('token/updateAccessToken', '')
           break
 
         default:
