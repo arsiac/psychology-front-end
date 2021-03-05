@@ -45,7 +45,7 @@ export default {
                 message: '登陆成功',
                 duration: 800
               })
-              this.$router.push({ name: 'main' })
+              this.$router.push({ name: 'home' })
             } else {
               this.loadCaptcha()
             }
