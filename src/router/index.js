@@ -145,7 +145,7 @@ router.beforeEach((to, from, next) => {
             checkAndSet(menuRoot, value.id, 'name', value.name)
           }
 
-          if (value.uri.match(/^url:/)) {
+          if (value.uri && value.uri.match(/^url:/)) {
             const url = value.uri.replace('url:', '')
             // 添加路由
             router.addRoute('main', {
