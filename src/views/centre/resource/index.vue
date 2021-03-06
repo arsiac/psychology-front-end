@@ -15,14 +15,14 @@
       <el-form-item>
         <el-button size="small" @click="getDataList()">查询</el-button>
         <el-button
-            v-if="$auth('centre/resource', 'post')"
+            v-if="$auth(authUrl, 'post')"
             size="small"
             type="primary"
             @click="addOrUpdateHandle()"
         >新增
         </el-button>
         <el-button
-            v-if="$auth('centre/resource', 'delete')"
+            v-if="$auth(authUrl, 'delete')"
             size="small"
             type="danger"
             @click="deleteHandle()"
@@ -121,14 +121,14 @@
               type="text"
               size="small"
               @click="addOrUpdateHandle(scope.row)"
-              :disabled="!$auth('centre/resource', 'put')"
+              :disabled="!$auth(authUrl, 'put')"
           >修改
           </el-button>
           <el-button
               type="text"
               size="small"
               @click="deleteHandle(scope.row)"
-              :disabled="!$auth('centre/resource', 'delete')"
+              :disabled="!$auth(authUrl, 'delete')"
           >删除
           </el-button>
         </template>
@@ -157,6 +157,7 @@ import AddOrUpdate from './resource-add-or-update'
 export default {
   data () {
     return {
+      authUrl: 'centre/resource',
       dataForm: {
         name: null,
         type: null

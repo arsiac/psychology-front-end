@@ -7,14 +7,14 @@
       <el-form-item>
         <el-button size="small" @click="getDataList()">查询</el-button>
         <el-button
-            v-if="$auth('centre/user', 'post')"
+            v-if="$auth(authUrl, 'post')"
             size="small"
             type="primary"
             @click="addOrUpdateHandle()"
         >新增
         </el-button>
         <el-button
-            v-if="$auth('centre/user', 'delete')"
+            v-if="$auth(authUrl, 'delete')"
             size="small"
             type="danger"
             @click="deleteHandle()"
@@ -75,14 +75,14 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="userRoleHandle(scope.row)">查看</el-button>
           <el-button
-              :disabled="!$auth('centre/user', 'put')"
+              :disabled="!$auth(authUrl, 'put')"
               type="text"
               size="small"
               @click="addOrUpdateHandle(scope.row)"
           >修改
           </el-button>
           <el-button
-              :disabled="!$auth('centre/user', 'delete')"
+              :disabled="!$auth(authUrl, 'delete')"
               type="text"
               size="small"
               @click="deleteHandle(scope.row)"
@@ -117,6 +117,7 @@ import UserRole from './role/user-role'
 export default {
   data () {
     return {
+      authUrl: 'centre/user',
       dataForm: {
         username: ''
       },

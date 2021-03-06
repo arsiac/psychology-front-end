@@ -6,9 +6,9 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="$auth('base/department', 'post')" size="small" type="primary" @click="addOrUpdateHandle()">新增
+        <el-button v-if="$auth(authUrl, 'post')" size="small" type="primary" @click="addOrUpdateHandle()">新增
         </el-button>
-        <el-button v-if="$auth('base/department', 'delete')" size="small" type="danger" @click="deleteHandle()"
+        <el-button v-if="$auth(authUrl, 'delete')" size="small" type="danger" @click="deleteHandle()"
                    :disabled="dataListSelections.length <= 0">批量删除
         </el-button>
       </el-form-item>
@@ -51,8 +51,8 @@
           width="150"
           label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row)" :disabled="!$auth(authUrl, 'put')">修改</el-button>
+          <el-button type="text" size="small" @click="deleteHandle(scope.row)" :disabled="!$auth(authUrl, 'delete')">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,6 +79,7 @@ import AddOrUpdate   from './department-add-or-update'
 export default {
   data () {
     return {
+      authUrl: 'base/department',
       dataForm: {
         name: ''
       },
