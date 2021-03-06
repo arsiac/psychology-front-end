@@ -1,6 +1,6 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="query">
+    <el-form :inline="true" :model="dataForm" size="small" @keyup.enter.native="query">
       <el-form-item>
         <el-input v-model="dataForm.name" placeholder="name" clearable></el-input>
       </el-form-item>
