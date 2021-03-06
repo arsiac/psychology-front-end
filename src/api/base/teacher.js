@@ -1,13 +1,13 @@
 import http       from '@/utils/http'
 import { SERVER } from '@/utils/constant'
 
-const DEPARTMENT_URL = `${SERVER.BASE_DATA}/department`
+const TEACHER_URL = `${SERVER.BASE_DATA}/teacher`
 
 /**
  * 获取全部系别
  * */
 function all () {
-  return http.$get(`${DEPARTMENT_URL}/all`)
+  return http.$get(`${TEACHER_URL}/all`)
 }
 
 /**
@@ -16,7 +16,7 @@ function all () {
  * @param dto 系别信息
  * */
 function fuzzy (dto) {
-  return http.$get(DEPARTMENT_URL, dto)
+  return http.$get(TEACHER_URL, dto)
 }
 
 /**
@@ -25,7 +25,7 @@ function fuzzy (dto) {
  * @param id 系别id
  * */
 function queryById (id) {
-  return http.$get(`${DEPARTMENT_URL}/${id}`)
+  return http.$get(`${TEACHER_URL}/${id}`)
 }
 
 /**
@@ -34,7 +34,7 @@ function queryById (id) {
  * @param dto 系别信息
  * */
 function add (dto) {
-  return http.$post(DEPARTMENT_URL, dto)
+  return http.$post(TEACHER_URL, dto)
 }
 
 /**
@@ -43,7 +43,7 @@ function add (dto) {
  * @param dto 系别信息
  * */
 function modify (dto) {
-  return http.$put(DEPARTMENT_URL, dto)
+  return http.$put(TEACHER_URL, dto)
 }
 
 /**
@@ -52,7 +52,7 @@ function modify (dto) {
  * @param dto 系别信息
  * */
 function remove (dto) {
-  return http.$delete(DEPARTMENT_URL, dto)
+  return http.$delete(TEACHER_URL, dto)
 }
 
 export default {
