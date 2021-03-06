@@ -1,11 +1,11 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="query">
       <el-form-item>
         <el-input v-model="dataForm.name" placeholder="name" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="query">查询</el-button>
         <el-button v-if="$auth(authUrl, 'post')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-button v-if="$auth(authUrl, 'delete')" type="danger" @click="deleteHandle()"
                    :disabled="dataListSelections.length <= 0">批量删除
@@ -104,7 +104,7 @@ export default {
   components: {
     AddOrUpdate
   },
-  activated () {
+  mounted () {
     this.getDataList()
   },
   methods: {
@@ -121,6 +121,11 @@ export default {
       }).catch(_ => {
         this.dataListLoading = false
       })
+    },
+    // 查询时回到第一页
+    query () {
+      this.pageIndex = 1
+      this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {

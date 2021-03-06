@@ -1,6 +1,6 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="query">
       <el-form-item>
         <el-input size="small" v-model="dataForm.name" placeholder="名称" clearable/>
       </el-form-item>
@@ -13,7 +13,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button size="small" @click="getDataList()">查询</el-button>
+        <el-button size="small" @click="query">查询</el-button>
         <el-button
             v-if="$auth(authUrl, 'post')"
             size="small"
@@ -191,6 +191,11 @@ export default {
       }).catch(_ => {
         this.dataListLoading = false
       })
+    },
+    // 查询时回到第一页
+    query () {
+      this.pageIndex = 1
+      this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {

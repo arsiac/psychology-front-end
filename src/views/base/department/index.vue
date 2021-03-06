@@ -1,11 +1,11 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" size="small" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" size="small" @keyup.enter.native="query">
       <el-form-item>
         <el-input v-model="dataForm.name" size="small" placeholder="名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="query">查询</el-button>
         <el-button v-if="$auth(authUrl, 'post')" size="small" type="primary" @click="addOrUpdateHandle()">新增
         </el-button>
         <el-button v-if="$auth(authUrl, 'delete')" size="small" type="danger" @click="deleteHandle()"
@@ -120,10 +120,16 @@ export default {
       })).then(({ data }) => {
         this.dataList        = data.data
         this.totalPage       = parseInt(data.total)
+        this.pageIndex = data.pageNum
         this.dataListLoading = false
       }).catch(_ => {
         this.dataListLoading = false
       })
+    },
+    // 查询时回到第一页
+    query () {
+      this.pageIndex = 1
+      this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {
