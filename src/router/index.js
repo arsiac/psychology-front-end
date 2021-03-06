@@ -177,7 +177,7 @@ router.beforeEach((to, from, next) => {
             checkAndSet(powerRoot, value.id, 'url', url)
 
             // 添加权限
-          } else if (value.uri.match(/^op:/)) {
+          } else if (value.uri && value.uri.match(/^op:/)) {
             if (value.parent) {
               checkAndSet(powerRoot, value.parent, value.uri.replace('op:', ''),
                 true)
