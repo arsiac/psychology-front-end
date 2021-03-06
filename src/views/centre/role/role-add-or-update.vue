@@ -1,7 +1,7 @@
 <template>
   <el-dialog
       :title="title"
-      :close-on-click-modal="false"
+      width="400px"
       :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="80px">
