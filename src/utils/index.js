@@ -14,3 +14,12 @@ export function isAuth (url, option) {
 
   return false
 }
+
+export function toDateString (time, isDateObject = false) {
+  let date = time
+  if (!isDateObject) {
+    date = new Date(time)
+  }
+
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+}

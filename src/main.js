@@ -6,7 +6,7 @@ import 'font-awesome/css/font-awesome.min.css'
 import router from '@/router'
 import store from '@/store'
 import less from 'less'
-import { isAuth } from '@/utils'
+import { isAuth, toDateString } from '@/utils'
 import App from './App.vue'
 
 Vue.use(less)
@@ -14,6 +14,7 @@ Vue.use(ElementUI)
 
 // 挂载全局
 Vue.prototype.$auth = isAuth
+Vue.prototype.$dateString = toDateString
 
 Vue.config.productionTip = false
 
