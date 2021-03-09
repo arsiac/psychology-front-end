@@ -48,6 +48,7 @@
               <el-option label="添加" value="op:post"/>
               <el-option label="修改" value="op:put"/>
               <el-option label="删除" value="op:delete"/>
+              <el-option label="审核" value="op:audit"/>
             </el-select>
           </el-form-item>
         </el-col>
