@@ -97,7 +97,7 @@ export default {
           { required: true, message: '审核结果不能为空', trigger: 'blur' }
         ],
         returnMessage: [
-          { validate: validateReturnMessage, trigger: 'blur' }
+          { validator: validateReturnMessage, trigger: 'blur' }
         ]
       }
     }
@@ -105,16 +105,18 @@ export default {
   methods: {
     init (row) {
       this.dataForm = Object.assign({}, row) || {}
+      // 清空状态防止干扰
+      this.dataForm.status = null
       this.visible  = true
     },
     // 表单提交
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          projectApi.add(Object.assign({}, this.dataForm)).then(({ data }) => {
+          projectApi.modify(Object.assign({}, this.dataForm)).then(({ data }) => {
             if (data.data) {
               this.$notify.success({
-                title: this.title,
+                title: '审核',
                 message: '操作成功'
               })
               this.visible = false

@@ -128,7 +128,9 @@
           <el-tag v-if="scope.row.status === 0">未提交</el-tag>
           <el-tag type="info" v-else-if="scope.row.status === 1">已提交</el-tag>
           <el-tag type="success" v-else-if="scope.row.status === 2">审核通过</el-tag>
-          <el-tag type="danger" v-else-if="scope.row.status === 3">退回修改</el-tag>
+          <el-tooltip v-else-if="scope.row.status === 3" class="item" effect="dark" :content="scope.row.returnMessage" placement="top">
+            <el-tag type="danger">退回修改</el-tag>
+          </el-tooltip>
         </template>
       </el-table-column>
       <el-table-column
