@@ -1,4 +1,4 @@
-import http                    from '@/utils/http'
+import http       from '@/utils/http'
 import { SERVER } from '@/utils/constant'
 
 const ROLE_URL = `${SERVER.USER_CENTRE}/role`
