@@ -1,7 +1,8 @@
 // 服务路径
 export const SERVER = {
   USER_CENTRE: '/centre',
-  BASE_DATA: '/base'
+  BASE_DATA: '/base',
+  MANAGER: '/manager'
 }
 
 // Http Method
