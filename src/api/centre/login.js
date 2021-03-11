@@ -22,6 +22,15 @@ function login (form) {
 }
 
 /**
+ * 登录接口,获取已有token
+ *
+ * @param id 用户id
+ * */
+function loginForToken (id) {
+  return http.$post(`${USER_CENTRE}/login/${id}`)
+}
+
+/**
  * 登出接口
  *
  * @param id 用户id
@@ -51,6 +60,7 @@ function app () {
 export default {
   register,
   login,
+  loginForToken,
   logout,
   captcha,
   app
