@@ -1,8 +1,8 @@
-import axios           from 'axios'
-import router          from '@/router'
-import store           from '@/store'
-import { Notification }     from 'element-ui'
-import { HTTP_METHOD } from './constant'
+import axios            from 'axios'
+import router           from '@/router'
+import store            from '@/store'
+import { Notification } from 'element-ui'
+import { HTTP_METHOD }  from './constant'
 
 const http = axios.create({
   timeout: 1000 * 30,
@@ -28,11 +28,15 @@ http.interceptors.request.use(config => {
   // 根据请求方式添加信息
   switch (config.method) {
     case HTTP_METHOD.POST:
-      config.data.createBy = store.getters.id
+      if (config.data && !config.data.createBy) {
+        config.data.createBy = store.getters.id
+      }
 
     // eslint-disable-next-line no-fallthrough
     case HTTP_METHOD.PUT:
-      config.data.updateBy = store.getters.id
+      if (config.data && !config.data.updateBy) {
+        config.data.updateBy = store.getters.id
+      }
       break
     default:
       break
@@ -57,12 +61,20 @@ http.interceptors.response.use(response => {
 
   return response
 }, error => {
+  if (!error || !error.response) {
+    Notification.error({
+      title: '错误',
+      message: '请检查网络'
+    })
+    return Promise.reject(error)
+  }
   console.error(
     `===> HTTP(response error)
     url: ${error.config.url}
     status: ${error.response.status}
-    response: ${error.response.data ? JSON.stringify(error.response.data) : error.response.data}`)
-
+    response: ${error.response.data
+      ? JSON.stringify(error.response.data)
+      : error.response.data}`)
   // 无权限
   if (error.response.status === 401) {
     router.push({ name: 'login' })
