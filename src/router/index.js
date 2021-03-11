@@ -8,6 +8,7 @@ import Vue       from 'vue'
 import Router    from 'vue-router'
 import store     from '@/store'
 import systemApi from '@/api/centre/system'
+import loginApi  from '@/api/centre/login'
 
 Vue.use(Router)
 
@@ -16,6 +17,7 @@ const _import = page => () => import(`@/views/${page}/index.vue`)
 
 // 鉴权
 function authentication () {
+  const userId      = store.getters.id
   const token       = store.getters.accessToken
   const expire      = store.getters.expireTime
   const currentDate = new Date()
@@ -23,17 +25,35 @@ function authentication () {
   console.log(
     `************************************************************
 * ==> token(check)
+* ==> user: ${userId}
 * ==> token: ${token}
 * ==> current: ${currentDate.toLocaleString()}
 * ==> expire:  ${new Date(expire).toLocaleString()}
 ************************************************************`
   )
 
-  // token为空/token过期 跳转到登录
-  if (!token || token === '' || !expire || expire < currentDate.getTime()) {
-    console.log('==> token验证失败 (token为空/token过期)')
+  // 用户id不存在
+  if (!userId || userId === '') {
+    console.error('==> 用户id不存在')
     return false
   }
+  // token为空/token过期 跳转到登录
+  if (!token || token === '' || !expire || expire < currentDate.getTime()) {
+    console.error('==> token验证失败 (token为空/token过期)')
+    return false
+  }
+
+  // 获取token进行比较
+  loginApi.loginForToken(userId).then(response => {
+    if (response.data.code === 200) {
+      if (token !== response.data.data) {
+        console.error(`==> token验证失败 (token不一致)
+==> 本地: ${token}
+==> 服务器: ${response.data.data}`)
+        router.push({ name: 'login' })
+      }
+    }
+  })
   return true
 }
 
@@ -100,7 +120,7 @@ const mainRoute = {
     }
   ],
 
-  // 进入路由前检查权限
+  // 每次进入路由前检查权限
   beforeEnter (to, from, next) {
     // 鉴权成功，加载用户资源
     if (authentication()) {
@@ -122,7 +142,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // 返回登陆后清空权限和目录
-  if (to.name ===  'login') {
+  if (to.name === 'login') {
     sessionStorage.setItem('menu', '[]')
     sessionStorage.setItem('auth', '{}')
     router.options.isAddDynamicMenuRoutes = false
