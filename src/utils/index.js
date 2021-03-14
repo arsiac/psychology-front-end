@@ -15,11 +15,27 @@ export function isAuth (url, option) {
   return false
 }
 
+/**
+ * 保证数字为两位数
+ *
+ * @param value 数值
+ * */
+function formatDate (value) {
+  return value > 9 ? value : `0${value}`
+}
+
+/**
+ * 转换为日期字符串
+ *
+ * @param time 时间
+ * @param isDateObject 是否是Date对象
+ * */
 export function toDateString (time, isDateObject = false) {
   let date = time
   if (!isDateObject) {
     date = new Date(time)
   }
 
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  return `${date.getFullYear()}-${formatDate(date.getMonth() + 1)}-${formatDate(
+    date.getDate())}`
 }
