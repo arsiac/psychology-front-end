@@ -144,14 +144,15 @@
               type="text"
               size="small"
               @click="auditHandle(scope.row)"
-              :disabled="!$auth(authUrl, 'audit') && scope.row.status !== 2"
+              v-if="$auth(authUrl, 'audit')"
+              :disabled="scope.row.status !== 2"
           >审核
           </el-button>
           <el-button
               type="text"
               size="small"
               @click="addOrUpdateHandle(scope.row)"
-              :disabled="!$auth(authUrl, 'put') && scope.row.status !== 2"
+              :disabled="!$auth(authUrl, 'put') && scope.row.status !== 1"
           >修改
           </el-button>
           <el-button
@@ -214,6 +215,7 @@ export default {
     // 获取数据列表
     getDataList () {
       this.dataListLoading = true
+      this.dataForm.createBy = this.$auth(this.authUrl, 'audit') ? 0 : null
       projectApi.fuzzy(Object.assign({}, this.dataForm, {
         pageNum: this.pageIndex,
         pageSize: this.pageSize
@@ -248,7 +250,7 @@ export default {
     addOrUpdateHandle (row) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row)
+        this.$refs.addOrUpdate.init(row, this.$auth(this.authUrl, 'audit'))
       })
     },
     // 审核

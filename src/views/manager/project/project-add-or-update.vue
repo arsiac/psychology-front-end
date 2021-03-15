@@ -80,8 +80,10 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit(0)">保存</el-button>
-      <el-button type="primary" @click="dataFormSubmit(1)">提交</el-button>
+      <el-button v-if="!hasAudit" type="primary" @click="dataFormSubmit(0)">保存</el-button>
+      <el-button v-if="!hasAudit" type="primary" @click="dataFormSubmit(1)">提交</el-button>
+      <!-- 有审核权限 -->
+      <el-button v-if="hasAudit" type="primary" @click="dataFormSubmit(2)">确认</el-button>
     </span>
   </el-dialog>
 </template>
@@ -96,6 +98,7 @@ export default {
   data () {
     return {
       title: '',
+      hasAudit: false,
       searchDataManager: '',
       searchDataSubjectType: '',
       searchDataProjectSource: '',
@@ -137,11 +140,11 @@ export default {
     }
   },
   methods: {
-    init (row) {
+    init (row, audit) {
       this.dataForm = Object.assign({}, row) || {}
       this.title    = !row ? '新增' : '修改'
       this.visible  = true
-
+      this.hasAudit = audit || false
       // search data
       this.searchDataManager       = row ? row.teacherName : ''
       this.searchDataSubjectType   = row ? row.subjectTypeName : ''
