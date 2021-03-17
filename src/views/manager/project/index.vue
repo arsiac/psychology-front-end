@@ -145,7 +145,7 @@
               size="small"
               @click="auditHandle(scope.row)"
               v-if="$auth(authUrl, 'audit')"
-              :disabled="scope.row.status !== 2"
+              :disabled="scope.row.status !== 1"
           >审核
           </el-button>
           <el-button
