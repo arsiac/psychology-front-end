@@ -9,25 +9,27 @@
 
     <!-- menu -->
     <div class="content">
-      <ul class="group">
-        <li>
-          <ul class="menu">
-            <li :class="active === 'home' ? 'select' : ''" @click="menuClick('home')">
-              <i class="menu-icon fa fa-dashboard"></i>
-              首页
-            </li>
-          </ul>
-        </li>
-        <li class="group-title" :key="i" v-for="(item, i) in menu">
-          {{ item.name }}
-          <ul class="menu">
-            <li :class="active === subItem.name ? 'select' : ''" :key="i" v-for="(subItem, i) in item.children" @click="menuClick(subItem.name)">
-              <i :class="'menu-icon fa ' + subItem.icon"></i>
-              {{ subItem.name }}
-            </li>
-          </ul>
-        </li>
-      </ul>
+      <el-scrollbar style="height: 100%">
+        <ul class="group">
+          <li>
+            <ul class="menu">
+              <li :class="active === 'home' ? 'select' : ''" @click="menuClick('home')">
+                <i class="menu-icon fa fa-dashboard"></i>
+                首页
+              </li>
+            </ul>
+          </li>
+          <li class="group-title" :key="i" v-for="(item, i) in menu">
+            {{ item.name }}
+            <ul class="menu">
+              <li :class="active === subItem.name ? 'select' : ''" :key="i" v-for="(subItem, i) in item.children" @click="menuClick(subItem.name)">
+                <i :class="'menu-icon fa ' + subItem.icon"></i>
+                {{ subItem.name }}
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </el-scrollbar>
     </div>
   </nav>
 </template>
