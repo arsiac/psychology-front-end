@@ -27,6 +27,14 @@ http.interceptors.request.use(config => {
 
   // 根据请求方式添加信息
   switch (config.method) {
+    case HTTP_METHOD.GET:
+      if (!config.params) {
+        config.params = {}
+      }
+      if (config.params.createBy !== 0) {
+        config.params.createBy = store.getters.id
+      }
+      break
     case HTTP_METHOD.POST:
       if (config.data && !config.data.createBy) {
         config.data.createBy = store.getters.id
