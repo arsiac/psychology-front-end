@@ -6,12 +6,13 @@
  * @return boolean
  */
 export function isAuth (url, option) {
-  const auth = JSON.parse(sessionStorage.getItem('auth'))
-
-  if (auth[url]) {
-    return auth[url][option] || false
+  const authString = sessionStorage.getItem('auth')
+  if (authString) {
+    const auth = JSON.parse(authString)
+    if (auth[url]) {
+      return auth[url][option] || false
+    }
   }
-
   return false
 }
 
